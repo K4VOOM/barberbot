@@ -12,8 +12,8 @@ async def command_start_handler(message: Message):
     await message.answer("Привіт!")
 
 
-@router.message(F.from_user.id.in_(settings.admin_ids), Command("pings"))
-async def command_pings_handler(message: Message):
+@router.message(F.from_user.id.in_(settings.admin_ids), Command("ping"))
+async def command_ping_handler(message: Message):
     await message.answer("pong")
 
 
