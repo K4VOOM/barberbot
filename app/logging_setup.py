@@ -4,6 +4,7 @@ import sys
 import traceback
 
 from aiogram import Bot
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 from aiogram.types import ErrorEvent
 
 from app.config import settings
@@ -43,13 +44,20 @@ async def on_error(event: ErrorEvent, bot: Bot) -> bool:
         user_input = f"Callback from user {callback_query.from_user.id}"
 
     exception = event.exception
+    if isinstance(exception, TelegramForbiddenError) or (
+        isinstance(exception, TelegramBadRequest)
+        and "message is not modified" in str(exception).lower()
+    ):
+        logger.warning("Ignoring expected Telegram API error: %s", exception)
+        return True
+
     logger.error(
         "Unhandled error (%s)",
         user_input,
         exc_info=(type(exception), exception, exception.__traceback__),
     )
 
-    tb = "".join(traceback.format_exception(exception))[-650:]
+    tb = "".join(traceback.format_exception(exception))[-3000:]
     text = (
         f"<b>Unhandled error</b>\n{html.escape(user_input)}\n"
         f"<pre>{html.escape(tb)}</pre>"
@@ -60,6 +68,11 @@ async def on_error(event: ErrorEvent, bot: Bot) -> bool:
             await callback_query.answer("An error occurred", show_alert=True)
         except Exception:
             logger.exception("Failed to answer callback query after an error")
+    elif message:
+        try:
+            await message.answer("Щось пішло не так, спробуйте ще раз")
+        except Exception:
+            logger.exception("Failed to notify user about the error")
 
     try:
         await bot.send_message(settings.alert_chat_id, text)
