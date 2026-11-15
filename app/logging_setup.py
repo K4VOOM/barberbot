@@ -39,7 +39,7 @@ async def on_error(event: ErrorEvent, bot: Bot) -> bool:
         await bot.send_message(settings.alert_chat_id, text)
 
     except Exception as e:
-        logging.error(f"Error occurred while sending alert message: {e}")
+        logger.exception("Failed to send alert")
 
     logging.error(f"Unhandled error ({user_input})\nException details: {event.exception}", exc_info=event.exception)
 
