@@ -3,17 +3,20 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 
 from app.config import settings
 from app.logging_setup import setup_logging, on_error
 #from app.db.session import async_session   TODO
 #from app.middlewares.db import DbSessionMiddleware TODO
 
+from app.handlers.common import router as common_router
+
 async def main() -> None:
     bot = Bot(token=settings.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
-    dp = Dispatcher()
-    # dp.include_router()    TODO
+    dp = Dispatcher(storage=MemoryStorage())
+    dp.include_router(common_router)
     #dp.update.outer_middleware(DbSessionMiddleware(session_pool=async_session))    TODO
 
     #scheduler = build_scheduler(bot)  TODO додасться на етапі 8
