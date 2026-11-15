@@ -11,19 +11,18 @@ from app.logging_setup import setup_logging
 
 TOKEN = settings.bot_token
 
-dp = Dispatcher()
-#dp.include_router()    TODO
-
-#dp.update.outer_middleware(DbSessionMiddleware(session_pool=async_session))    TODO
-
-#scheduler = build_scheduler(bot)  TODO додасться на етапі 8
-#scheduler.start() TODO
-
-setup_logging()
-#dp.errors.register(on_error)
-
 async def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    dp = Dispatcher()
+    # dp.include_router()    TODO
+    # dp.update.outer_middleware(DbSessionMiddleware(session_pool=async_session))    TODO
+
+    # scheduler = build_scheduler(bot)  TODO додасться на етапі 8
+    # scheduler.start() TODO
+
+    setup_logging()
+    # dp.errors.register(on_error)
 
     await dp.start_polling(bot)
 
