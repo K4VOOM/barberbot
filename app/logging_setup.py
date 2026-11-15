@@ -65,7 +65,7 @@ async def on_error(event: ErrorEvent, bot: Bot) -> bool:
 
     if callback_query:
         try:
-            await callback_query.answer("An error occurred", show_alert=True)
+            await callback_query.answer("Щось пішло не так", show_alert=True)
         except Exception:
             logger.exception("Failed to answer callback query after an error")
     elif message:
