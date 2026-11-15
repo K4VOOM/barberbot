@@ -12,6 +12,8 @@ from app.logging_setup import setup_logging, on_error
 
 from app.handlers.common import router as common_router
 
+setup_logging()
+
 async def main() -> None:
     bot = Bot(token=settings.bot_token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
@@ -22,10 +24,9 @@ async def main() -> None:
     #scheduler = build_scheduler(bot)  TODO додасться на етапі 8
     #scheduler.start() TODO
 
-    setup_logging()
     dp.errors.register(on_error)
 
-    await dp.start_polling(bot)
+    await dp.start_polling(bot,  allowed_updates=dp.resolve_used_update_types())
 
 
 if __name__ == "__main__":
