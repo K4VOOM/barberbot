@@ -1,3 +1,7 @@
+from functools import cached_property
+
+from sqlalchemy.engine import URL
+
 from pathlib import Path
 from pydantic import Field
 
@@ -12,7 +16,19 @@ class Settings(BaseSettings):
     postgres_host: str
     postgres_port: int
     postgres_db: str
-    database_url: str = f"postgresql+asyncpg://{{postgres_user}}:{{postgres_password}}@{{postgres_host}}:{{postgres_port}}/{{postgres_db}}"
+
+    @property
+    @cached_property
+    def database_url(self) -> str:
+        return URL.create(
+            drivername="postgresql+asyncpg",
+            username=self.postgres_user,
+            password=self.postgres_password,
+            host=self.postgres_host,
+            port=self.postgres_port,
+            database=self.postgres_db
+        )
+
     admin_ids: list[int] = Field(default_factory=list)
     manager_chat_id: int
     alert_chat_id: int
