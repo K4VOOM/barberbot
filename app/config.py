@@ -7,7 +7,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 class Settings(BaseSettings):
     bot_token: str
-    database_url: str
+    postgres_user: str
+    postgres_password: str
+    postgres_host: str
+    postgres_port: int
+    postgres_db: str
+    database_url: str = f"postgresql+asyncpg://{{postgres_user}}:{{postgres_password}}@{{postgres_host}}:{{postgres_port}}/{{postgres_db}}"
     admin_ids: list[int] = Field(default_factory=list)
     manager_chat_id: int
     alert_chat_id: int
